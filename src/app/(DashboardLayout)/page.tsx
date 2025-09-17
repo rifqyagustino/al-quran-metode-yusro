@@ -1,11 +1,13 @@
 import React from "react";
 import SalesProfit from "../components/dashboard/RevenueForecast";
+import Card from "../components/dashboard/Card"; // Menggunakan komponen Card kustom Anda
 import TotalIncome from "../components/dashboard/TotalIncome";
 import ProductRevenue from "../components/dashboard/ProductRevenue";
 import DailyActivity from "../components/dashboard/DailyActivity";
 import BlogCards from "../components/dashboard/BlogCards";
 import Link from "next/link";
-import { Card } from "flowbite-react";
+// Hapus import Card dari "flowbite-react" karena Anda tidak menggunakannya lagi
+// import { Card } from "flowbite-react";
 
 const page = () => {
   return (
@@ -17,7 +19,8 @@ const page = () => {
         <div className="lg:col-span-4 col-span-12">
           <div className="grid grid-cols-12 h-full items-stretch">
             <div className="col-span-12 mb-30">
-              <Card />
+              {/* Menggunakan komponen Card kustom dengan properti yang benar */}
+              <Card id={0} title={""} progress={0} totalParts={0} />
             </div>
             <div className="col-span-12">
               <TotalIncome />
