@@ -1,5 +1,5 @@
 import { Button, Label, TextInput } from "flowbite-react";
-import Link from "next/link";
+// import Link from "next/link";
 import React from "react";
 
 const AuthRegister = () => {
@@ -8,7 +8,7 @@ const AuthRegister = () => {
       <form>
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="name" value="Name" />
+            <Label htmlFor="name" value="Nama" />
           </div>
           <TextInput
             id="name"
@@ -19,10 +19,10 @@ const AuthRegister = () => {
         </div>
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="emadd" value="Email Address" />
+            <Label htmlFor="email" value="Email" />
           </div>
           <TextInput
-            id="emadd"
+            id="email"
             type="text"
             sizing="md"
             className="form-control form-rounded-xl"
@@ -38,12 +38,13 @@ const AuthRegister = () => {
             sizing="md"
             className="form-control form-rounded-xl"
           />
-        </div> 
-        <Button color={'primary'} className="w-full">Sign Up</Button> 
-        
+        </div>
+        <Button color={"primary"} className="w-full">
+          Register
+        </Button>
       </form>
     </>
-  )
-}
+  );
+};
 
-export default AuthRegister
+export default AuthRegister;

@@ -8,10 +8,10 @@ const AuthLogin = () => {
       <form>
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="Username" value="Username" />
+            <Label htmlFor="email" value="Email" />
           </div>
           <TextInput
-            id="username"
+            id="email"
             type="text"
             sizing="md"
             className="form-control form-rounded-xl"
@@ -35,15 +35,20 @@ const AuthLogin = () => {
               htmlFor="accept"
               className="opacity-90 font-normal cursor-pointer"
             >
-              Remeber this Device
+              Ingat saya
             </Label>
           </div>
           <Link href={"/"} className="text-primary text-sm font-medium">
-            Forgot Password ?
+            Lupa Password ?
           </Link>
         </div>
-        <Button color={"primary"} href="/" as={Link} className="w-full bg-primary text-white rounded-xl">
-          Sign in
+        <Button
+          color={"primary"}
+          href="/"
+          as={Link}
+          className="w-full bg-primary text-white rounded-xl"
+        >
+          Login
         </Button>
       </form>
     </>

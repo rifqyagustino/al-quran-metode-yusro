@@ -1,11 +1,12 @@
-"use client"
-import FullLogo from "@/app/(DashboardLayout)/layout/shared/logo/FullLogo";
+"use client";
+import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
 import React from "react";
 import Link from "next/link";
 import AuthLogin from "../authforms/AuthLogin";
 
 const gradientStyle = {
-  background: "linear-gradient(45deg, rgb(238, 119, 82,0.2), rgb(231, 60, 126,0.2), rgb(35, 166, 213,0.2), rgb(35, 213, 171,0.2))",
+  background:
+    "linear-gradient(45deg, rgb(238, 119, 82,0.2), rgb(231, 60, 126,0.2), rgb(35, 166, 213,0.2), rgb(35, 213, 171,0.2))",
   backgroundSize: "400% 400%",
   animation: "gradient 15s ease infinite",
   height: "100vh",
@@ -18,14 +19,20 @@ const BoxedLogin = () => {
         <div className="rounded-xl shadow-md bg-white dark:bg-darkgray p-6 w-full md:w-96 border-none">
           <div className="flex flex-col gap-2 p-0 w-full">
             <div className="mx-auto">
-              <FullLogo />
+              <Logo />
             </div>
-            <p className="text-sm text-center text-dark my-3">Sign In on MatDash</p>
+            <h1 className="text-2xl text-center text-dark my-3">Login</h1>
+            <p className="text-sm text-center text-dark my-3">
+              Silakan masuk untuk belajar mengaji.
+            </p>
             <AuthLogin />
             <div className="flex gap-2 text-base text-ld font-medium mt-6 items-center justify-center">
-              <p>New to Matdash?</p>
-              <Link href="/auth/register" className="text-primary text-sm font-medium">
-                Create an account
+              <p>Belum Punya Akun?</p>
+              <Link
+                href="/auth/register"
+                className="text-primary text-sm font-medium"
+              >
+                Register
               </Link>
             </div>
           </div>
