@@ -56,7 +56,7 @@ const Header = () => {
               <Notification />
             </div>
 
-            
+            <Profile />
           </div>
         </Navbar>
       </header>
