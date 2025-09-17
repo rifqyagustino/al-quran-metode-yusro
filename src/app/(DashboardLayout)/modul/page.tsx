@@ -1,3 +1,3 @@
 export default function Profil() {
-    return <div>Profil</div>;
+    return <div>modul</div>;
 }

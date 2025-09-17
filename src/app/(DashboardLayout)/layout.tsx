@@ -11,7 +11,6 @@ export default function Layout({
 }>) {
   return (
     <>
-    <Topbar />
       <div className="flex w-full min-h-screen">
         <div className="page-wrapper flex w-full">
           {/* Header/sidebar */}
