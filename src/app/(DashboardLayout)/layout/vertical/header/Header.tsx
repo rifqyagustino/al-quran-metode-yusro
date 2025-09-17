@@ -56,12 +56,7 @@ const Header = () => {
               <Notification />
             </div>
 
-            <div className="flex gap-4 items-center">
-              <Button as={Link} target="_blank" href="https://adminmart.com/product/matdash-next-js-admin-dashboard-template/?ref=56#product-demo-section" size={'sm'} color={"primary"} className="rounded-md py-1 px-3">
-              Check Pro Template
-              </Button>
-              <Profile />
-            </div>
+            
           </div>
         </Navbar>
       </header>
