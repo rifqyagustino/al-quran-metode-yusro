@@ -1,9 +1,13 @@
+// src/app/(DashboardLayout)/layout/vertical/header/Profile.tsx
+"use client"; // <-- 1. Tambahkan ini agar bisa menggunakan onClick
 
 import { Button, Dropdown } from "flowbite-react";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
+import { signOut } from "next-auth/react"; // <-- 2. Import fungsi signOut
+
 const Profile = () => {
   return (
     <div className="relative group/menu">
@@ -23,7 +27,6 @@ const Profile = () => {
           </span>
         )}
       >
-
         <Dropdown.Item
           as={Link}
           href="#"
@@ -49,7 +52,14 @@ const Profile = () => {
           My Task
         </Dropdown.Item>
         <div className="p-3 pt-0">
-        <Button as={Link}  size={'sm'}  href="/auth/login" className="mt-2 border border-primary text-primary bg-transparent hover:bg-lightprimary outline-none focus:outline-none">Logout</Button>
+          {/* 3. Ganti Button di bawah ini */}
+          <Button
+            size={"sm"}
+            onClick={() => signOut({ callbackUrl: "/auth/login" })}
+            className="mt-2 w-full border border-primary text-primary bg-transparent hover:bg-lightprimary outline-none focus:outline-none"
+          >
+            Logout
+          </Button>
         </div>
       </Dropdown>
     </div>

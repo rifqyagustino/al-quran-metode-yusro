@@ -1,19 +1,44 @@
+// src/app/auth/register/page.tsx
 "use client";
-import React from "react";
+import React, { useEffect } from "react"; // <-- Import useEffect
 import Link from "next/link";
 import AuthRegister from "../authforms/AuthRegister";
 import Logo from "@/app/(DashboardLayout)/layout/shared/logo/Logo";
-
-const gradientStyle = {
-  background:
-    "linear-gradient(45deg, rgb(238, 119, 82,0.2), rgb(231, 60, 126,0.2), rgb(35, 166, 213,0.2), rgb(35, 213, 171,0.2))",
-  backgroundSize: "400% 400%",
-  animation: "gradient 15s ease infinite",
-  height: "100vh",
-  overflow: "hidden",
-};
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation"; // <-- Gunakan useRouter
+import { Spinner } from "flowbite-react";
 
 const BoxedRegister = () => {
+  // Panggil semua hooks di level atas
+  const { status } = useSession();
+  const router = useRouter();
+
+  // Gunakan useEffect untuk menangani side-effect
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.push("/");
+    }
+  }, [status, router]);
+
+  // Tampilkan Spinner jika loading atau sudah authenticated
+  if (status === "loading" || status === "authenticated") {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner size="xl" />
+      </div>
+    );
+  }
+
+  // Render form jika 'unauthenticated'
+  const gradientStyle = {
+    background:
+      "linear-gradient(45deg, rgb(238, 119, 82,0.2), rgb(231, 60, 126,0.2), rgb(35, 166, 213,0.2), rgb(35, 213, 171,0.2))",
+    backgroundSize: "400% 400%",
+    animation: "gradient 15s ease infinite",
+    height: "100vh",
+    overflow: "hidden",
+  };
+
   return (
     <div style={gradientStyle} className="relative overflow-hidden h-screen">
       <div className="flex h-full justify-center items-center px-4">
@@ -26,7 +51,6 @@ const BoxedRegister = () => {
             <p className="text-sm text-center text-dark my-3">
               Isi data di bawah untuk memulai belajar mengaji.
             </p>
-
             <AuthRegister />
             <div className="flex gap-2 text-base text-ld font-medium mt-6 items-center justify-center">
               <p>Sudah Punya Akun? </p>

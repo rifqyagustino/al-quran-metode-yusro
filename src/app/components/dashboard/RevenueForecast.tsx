@@ -4,7 +4,10 @@ import dynamic from "next/dynamic";
 import { Select } from "flowbite-react";
 import { ApexOptions } from "apexcharts";
 
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const Chart = dynamic(
+  () => import("react-apexcharts").then((mod) => mod.default),
+  { ssr: false }
+);
 
 const RevenueForecast = () => {
   const [selectedPeriod, setSelectedPeriod] = useState<string>("This Week");
@@ -88,13 +91,13 @@ const RevenueForecast = () => {
       borderColor: "#90A4AE50",
       xaxis: {
         lines: {
-          show: true
-        }
+          show: true,
+        },
       },
       yaxis: {
         lines: {
-          show: true
-        }
+          show: true,
+        },
       },
     },
     stroke: {
@@ -112,7 +115,17 @@ const RevenueForecast = () => {
       },
     },
     xaxis: {
-      categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+      categories: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+      ],
       axisBorder: {
         show: false,
       },

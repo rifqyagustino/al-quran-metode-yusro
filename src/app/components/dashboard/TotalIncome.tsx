@@ -1,12 +1,14 @@
 "use client";
 import React from "react";
 import dynamic from "next/dynamic";
-const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const Chart = dynamic(
+  () => import("react-apexcharts").then((mod) => mod.default),
+  { ssr: false }
+);
 import { Icon } from "@iconify/react";
 import { Badge } from "flowbite-react";
 
 const TotalIncome = () => {
-
   const ChartData: any = {
     series: [
       {
@@ -66,9 +68,7 @@ const TotalIncome = () => {
         <div className="flex">
           <div className="flex-1">
             <p className="text-xl text-dark font-medium mb-2">$680</p>
-            <Badge className={`bg-lightsuccess text-success `}>
-              +18%
-            </Badge>
+            <Badge className={`bg-lightsuccess text-success `}>+18%</Badge>
             <p className="text-success text-xs"></p>
           </div>
           <div className="rounded-bars flex-1 md:ps-7">

@@ -1,11 +1,59 @@
-import { Button, Label, TextInput } from "flowbite-react";
-// import Link from "next/link";
-import React from "react";
+// src/app/auth/authforms/AuthRegister.tsx
+"use client";
+
+import { Button, Label, TextInput, Alert } from "flowbite-react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const AuthRegister = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      setError(data.message || "Gagal melakukan registrasi.");
+    } else {
+      setSuccess(data.message);
+    }
+    setLoading(false);
+  };
+
   return (
     <>
-      <form>
+      {error && (
+        <Alert
+          color="failure"
+          onDismiss={() => setError(null)}
+          className="mb-4"
+        >
+          {error}
+        </Alert>
+      )}
+      {success && (
+        <Alert color="success" className="mb-4">
+          {success}
+        </Alert>
+      )}
+
+      <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <div className="mb-2 block">
             <Label htmlFor="name" value="Nama" />
@@ -15,6 +63,9 @@ const AuthRegister = () => {
             type="text"
             sizing="md"
             className="form-control form-rounded-xl"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
           />
         </div>
         <div className="mb-4">
@@ -23,9 +74,12 @@ const AuthRegister = () => {
           </div>
           <TextInput
             id="email"
-            type="text"
+            type="email"
             sizing="md"
             className="form-control form-rounded-xl"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div className="mb-6">
@@ -37,10 +91,18 @@ const AuthRegister = () => {
             type="password"
             sizing="md"
             className="form-control form-rounded-xl"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-        <Button color={"primary"} className="w-full">
-          Register
+        <Button
+          type="submit"
+          color={"primary"}
+          className="w-full"
+          disabled={loading}
+        >
+          {loading ? "Mendaftar..." : "Register"}
         </Button>
       </form>
     </>
