@@ -1,6 +1,6 @@
 import React from "react";
 import SalesProfit from "../components/dashboard/RevenueForecast";
-import NewCustomers from "../components/dashboard/Card";
+import Card from "../components/dashboard/Card";
 import TotalIncome from "../components/dashboard/TotalIncome";
 import ProductRevenue from "../components/dashboard/ProductRevenue";
 import DailyActivity from "../components/dashboard/DailyActivity";
@@ -17,7 +17,7 @@ const page = () => {
         <div className="lg:col-span-4 col-span-12">
           <div className="grid grid-cols-12 h-full items-stretch">
             <div className="col-span-12 mb-30">
-              <NewCustomers />
+              <Card id={0} title={""} progress={0} totalParts={0} />
             </div>
             <div className="col-span-12">
               <TotalIncome />

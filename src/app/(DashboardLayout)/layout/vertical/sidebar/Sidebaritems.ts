@@ -43,6 +43,13 @@ const SidebarContent: MenuItem[] = [
         isPro: false
       },
       {
+        name: "latihan",
+        icon: "solar:widget-add-line-duotone",
+        id: uniqueId(),
+        url: "/latihan",
+        isPro: false
+      },
+      {
         name: "Profil",
         icon: "solar:widget-add-line-duotone",
         id: uniqueId(),
