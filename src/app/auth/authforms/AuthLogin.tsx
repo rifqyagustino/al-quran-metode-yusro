@@ -1,20 +1,62 @@
-import { Button, Checkbox, Label, TextInput } from "flowbite-react";
+"use client";
+
+import { Button, Checkbox, Label, TextInput, Alert } from "flowbite-react";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const AuthLogin = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      email,
+      password,
+    });
+
+    if (result?.error) {
+      setError(result.error);
+      setLoading(false);
+    } else {
+      // Redirect ke dashboard jika berhasil
+      router.push("/");
+    }
+  };
+
   return (
     <>
-      <form>
+      {error && (
+        <Alert
+          color="failure"
+          onDismiss={() => setError(null)}
+          className="mb-4"
+        >
+          {error}
+        </Alert>
+      )}
+      <form onSubmit={handleSubmit}>
         <div className="mb-4">
           <div className="mb-2 block">
-            <Label htmlFor="Username" value="Username" />
+            <Label htmlFor="email" value="Email" />
           </div>
           <TextInput
-            id="username"
-            type="text"
+            id="email"
+            type="email"
             sizing="md"
             className="form-control form-rounded-xl"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
           />
         </div>
         <div className="mb-4">
@@ -26,24 +68,24 @@ const AuthLogin = () => {
             type="password"
             sizing="md"
             className="form-control form-rounded-xl"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
           />
         </div>
-        <div className="flex justify-between my-5">
-          <div className="flex items-center gap-2">
-            <Checkbox id="accept" className="checkbox" />
-            <Label
-              htmlFor="accept"
-              className="opacity-90 font-normal cursor-pointer"
-            >
-              Remeber this Device
-            </Label>
-          </div>
-          <Link href={"/"} className="text-primary text-sm font-medium">
-            Forgot Password ?
+        {/* Fitur "Ingat Saya" dan "Lupa Password" bisa ditambahkan kemudian */}
+        <div className="flex justify-end my-5">
+          <Link href={"#"} className="text-primary text-sm font-medium">
+            Lupa Password ?
           </Link>
         </div>
-        <Button color={"primary"} href="/" as={Link} className="w-full bg-primary text-white rounded-xl">
-          Sign in
+        <Button
+          type="submit"
+          color={"primary"}
+          className="w-full bg-primary text-white rounded-xl"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
         </Button>
       </form>
     </>
