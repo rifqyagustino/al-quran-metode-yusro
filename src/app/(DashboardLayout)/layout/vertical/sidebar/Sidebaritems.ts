@@ -36,25 +36,18 @@ const SidebarContent: MenuItem[] = [
         isPro: false
       },
       {
-        name: "Dashboard1",
+        name: "Modul",
         icon: "solar:widget-add-line-duotone",
         id: uniqueId(),
-        url: "https://matdash-nextjs-main.vercel.app/",
-        isPro: true
+        url: "/modul",
+        isPro: false
       },
       {
-        name: "Dashboard2",
-        icon: "solar:chart-line-duotone",
+        name: "Profil",
+        icon: "solar:widget-add-line-duotone",
         id: uniqueId(),
-        url: "https://matdash-nextjs-main.vercel.app/dashboards/dashboard2",
-        isPro: true
-      },
-      {
-        name: "Dashboard3",
-        icon: "solar:screencast-2-line-duotone",
-        id: uniqueId(),
-        url: "https://matdash-nextjs-main.vercel.app/dashboards/dashboard3",
-        isPro: true
+        url: "/profil",
+        isPro: false
       },
       {
         name: "Front Pages",
