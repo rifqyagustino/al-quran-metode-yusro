@@ -1,53 +1,37 @@
+'use client';
+
 import React from "react";
-import Card from "../../components/dashboard/Card"; // Menggunakan komponen Card kustom Anda
-import TotalIncome from "../../components/dashboard/TotalIncome";
-import ProductRevenue from "../../components/dashboard/ProductRevenue";
-import DailyActivity from "../../components/dashboard/DailyActivity";
-import BlogCards from "../../components/dashboard/BlogCards";
-import Link from "next/link";
-// Hapus import Card dari "flowbite-react" karena Anda tidak menggunakannya lagi
-// import { Card } from "flowbite-react";
+import { useSession } from "next-auth/react";
+import DashboardStats from "@/app/components/dashboard/DashboardStats";
 
-const page = () => {
+// Data manual untuk modul-modul. 
+// Nantinya, data ini akan diambil dari API.
+const modules = [
+  { id: 1, title: 'Jilid 1', progress: 5, totalParts: 10, status: 'sedang dikerjakan' as const },
+  { id: 2, title: 'Jilid 2', progress: 0, totalParts: 21, status: 'belum mulai' as const },
+  { id: 3, title: 'Jilid 3', progress: 16, totalParts: 16, status: 'selesai' as const },
+  // Tambahkan modul lain jika ada
+];
+
+export default function DashboardPage() {
+  // Mengambil data sesi di client
+  const { data: session } = useSession();
+
+  // Mengambil nama user, atau 'User' jika tidak ada sesi
+  const userName = session?.user?.name || 'User';
   return (
-    <>
-      <div className="grid grid-cols-12 gap-30">
-        <div className="lg:col-span-8 col-span-12">{/* <SalesProfit /> */}</div>
-        <div className="lg:col-span-4 col-span-12">
-          <div className="grid grid-cols-12 h-full items-stretch">
-            <div className="col-span-12 mb-30">
-              {/* Menggunakan komponen Card kustom dengan properti yang benar */}
-              <Card id={0} title={""} progress={0} totalParts={0} />
-            </div>
-            <div className="col-span-12">
-              <TotalIncome />
-            </div>
-          </div>
-        </div>
-        <div className="lg:col-span-8 col-span-12">
-          <ProductRevenue />
-        </div>
-        <div className="lg:col-span-4 col-span-12">
-          <DailyActivity />
-        </div>
-        <div className="col-span-12">
-          <BlogCards />
-        </div>
-        <div className="col-span-12 text-center">
-          <p className="text-base">
-            Design and Developed by{" "}
-            <Link
-              href="https://adminmart.com/"
-              target="_blank"
-              className="pl-1 text-primary underline decoration-primary"
-            >
-              adminmart.com
-            </Link>
-          </p>
-        </div>
+    <div>
+       <div className="mb-8">
+        <h1 className="text-3xl font-bold text-dark">Welcome, {userName}!</h1>
+        {/* ... sisa kode ... */}
       </div>
-    </>
-  );
-};
+  
+      
+      {/* 1. Menampilkan komponen statistik di bagian atas */}
+      {/* Komponen ini menerima data 'modules' untuk melakukan kalkulasi */}
+      <DashboardStats modules={modules} />
 
-export default page;
+      
+    </div>
+  );
+}

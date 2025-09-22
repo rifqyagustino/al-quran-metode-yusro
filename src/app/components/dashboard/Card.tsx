@@ -37,17 +37,18 @@ const statusStyles = {
 const Card = ({ id, title, progress, totalParts, status, icon = "solar:notebook-outline" }: CardProps) => {
   const percentage = totalParts > 0 ? Math.round((progress / totalParts) * 100) : 0;
   
-  // Memberikan nilai default 'belum mulai' jika status tidak valid atau tidak ada
   const currentStatus = statusStyles[status!] || statusStyles['belum mulai'];
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 transition-all hover:shadow-lg hover:-translate-y-1">
       <div className="flex items-start justify-between mb-6">
         <div className="flex items-center gap-4">
-          <div className="bg-gray-100 text-gray-500 p-3 rounded-md">
+          {/* Diubah: Warna background & ikon disamakan dengan CardLatihan */}
+          <div className="bg-lightsecondary text-secondary p-3 rounded-md">
             <Icon icon={icon} height={24} />
           </div>
-          <p className="text-lg text-gray-800 font-semibold">{title}</p>
+          {/* Diubah: Warna teks judul disamakan */}
+          <p className="text-lg text-dark font-semibold">{title}</p>
         </div>
         <span className={`px-2.5 py-1 text-xs font-semibold rounded-full ${currentStatus.bg} ${currentStatus.text_color}`}>
           {currentStatus.text}
@@ -55,13 +56,16 @@ const Card = ({ id, title, progress, totalParts, status, icon = "solar:notebook-
       </div>
 
       <div className="flex items-center justify-between mb-2">
-        <p className="text-sm text-gray-600">Progres</p>
-        <p className="text-sm text-gray-800 font-semibold">{percentage}%</p>
+        {/* Diubah: Warna teks disamakan */}
+        <p className="text-sm text-dark">Progres</p>
+        <p className="text-sm text-dark font-semibold">{percentage}%</p>
       </div>
       
-      <Progress progress={percentage} color="green" />
+      {/* Diubah: Warna progress bar disamakan */}
+      <Progress progress={percentage} color="secondary" />
 
-      <p className="text-xs text-gray-500 mt-2">
+      {/* Diubah: Warna teks disamakan */}
+      <p className="text-xs text-dark mt-2">
         {progress} dari {totalParts} halaman selesai
       </p>
     </div>
