@@ -12,7 +12,7 @@ interface CardProps {
   icon?: string; // Icon dibuat opsional
 }
 
-const Card = ({ id, title, progress, totalParts, icon = "solar:football-outline" }: CardProps) => {
+const Card = ({ id, title, progress, totalParts, icon = "solar:book-linear" }: CardProps) => {
   // Hitung persentase progres, pastikan tidak ada pembagian dengan nol
   const percentage = totalParts > 0 ? Math.round((progress / totalParts) * 100) : 0;
 
