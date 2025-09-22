@@ -48,13 +48,6 @@ const SidebarContent: MenuItem[] = [
         id: uniqueId(),
         url: "/latihan",
         isPro: false
-      },
-      {
-        name: "Profil",
-        icon: "iconamoon:profile-circle-light",
-        id: uniqueId(),
-        url: "/profil",
-        isPro: false
       }
     ],
   },
