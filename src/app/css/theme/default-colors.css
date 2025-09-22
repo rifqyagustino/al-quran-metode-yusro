@@ -1,24 +1,37 @@
 :root {
-    --color-primary: #635bff;
-    --color-secondary: #14E9E2;
-    --color-primary-emphasis: #0091E5;
-    --color-secondary-emphasis: #673ADE;
-    --color-lightprimary: #4400ff20;
-    --color-lightsecondary: #d0fbf9;
-    --color-info: #46caeb;
-    --color-success: #36C76C;
-    --color-warning: #FFB900;
-    --color-error: #FF6692;
-    --color-lightsuccess: #d7f4e2;
-    --color-lighterror: #FF669230;
-    --color-lightinfo: #46caeb25;
-    --color-lightwarning: #FFB90025;
-    --color-white: #fff;
-    --color-dark: #111c2d;
-    --color-border: #e0e6eb;
-    --color-bordergray: #cfd6db;
-    --color-link: #2a3547;
-    --color-muted: #EFF4FA;
-    --color-darklink: #7b8893;
-    --color-lightgray: #f4f7fb;
+  /* Warna utama: Nuansa biru laut */
+  --color-primary: #0077b6; /* Biru Laut */
+  --color-secondary: #14E9E2; /* Biru tetap */
+  
+  /* Aksen dan penekanan: Nuansa biru laut */
+  --color-primary-emphasis: #0096c7; /* Biru Laut yang lebih cerah */
+  --color-secondary-emphasis: #023e8a; /* Biru Tua yang elegan */
+  
+  /* Warna latar belakang terang */
+  --color-lightprimary: #bff0fa; /* Biru Muda Laut */
+  --color-lightsecondary: #d0fbf9; /* Biru muda tetap */
+  
+  /* Warna status: Tetap seperti standar untuk kejelasan */
+  --color-info: #46caeb;
+  --color-success: #36C76C; /* Hijau standar untuk sukses */
+  --color-warning: #FFB900;
+  --color-error: #FF6692;
+  
+  /* Warna latar belakang terang untuk status */
+  --color-lightsuccess: #d7f4e2;
+  --color-lighterror: #FF669230;
+  --color-lightinfo: #46caeb25;
+  --color-lightwarning: #FFB90025;
+  
+  /* Warna dasar dan netral */
+  --color-white: #fff;
+  --color-dark: #111c2d;
+  
+  /* Garis tepi dan latar belakang */
+  --color-border: #e0e6eb;
+  --color-bordergray: #cfd6db;
+  --color-link: #2a3547;
+  --color-muted: #EFF4FA;
+  --color-darklink: #7b8893;
+  --color-lightgray: #f4f7fb;
 }

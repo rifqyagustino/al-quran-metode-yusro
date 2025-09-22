@@ -13,18 +13,21 @@ const modules = [
   { id: 3, title: 'Jilid 3', progress: 16, totalParts: 16, status: 'selesai' },
 ];
     return (
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {modules.map((module) => (
-        // 2. Bungkus Card dengan komponen Link
-        <Link href={`/modul/${module.id}`} key={module.id}>
+      <div className="p-4">
+        <h1 className="text-2xl font-bold mb-6">Daftar Modul</h1>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {modules.map((module) => (
+            // 2. Bungkus Card dengan komponen Link
+          <Link href={`/modul/${module.id}`} key={module.id}>
             <Card
               id={module.id}
               title={module.title}
               progress={module.progress}
               totalParts={module.totalParts}
             />
-        </Link>
-      ))}
-    </div>
+          </Link>
+         ))}
+        </div>
+      </div>
   );
 }

@@ -37,10 +37,8 @@ const statusStyles = {
 const Card = ({ id, title, progress, totalParts, status, icon = "solar:notebook-outline" }: CardProps) => {
   const percentage = totalParts > 0 ? Math.round((progress / totalParts) * 100) : 0;
   
-  // ====================== PERUBAHAN DI SINI ======================
   // Memberikan nilai default 'belum mulai' jika status tidak valid atau tidak ada
   const currentStatus = statusStyles[status!] || statusStyles['belum mulai'];
-  // ===============================================================
 
   return (
     <div className="bg-white rounded-xl shadow-md p-6 transition-all hover:shadow-lg hover:-translate-y-1">
