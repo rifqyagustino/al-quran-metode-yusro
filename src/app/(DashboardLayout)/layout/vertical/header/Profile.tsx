@@ -1,14 +1,29 @@
 // src/app/(DashboardLayout)/layout/vertical/header/Profile.tsx
-"use client"; // <-- 1. Tambahkan ini agar bisa menggunakan onClick
+"use client";
 
-import { Button, Dropdown } from "flowbite-react";
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { Button, Dropdown, Spinner } from "flowbite-react";
 import { Icon } from "@iconify/react";
-import { signOut } from "next-auth/react"; // <-- 2. Import fungsi signOut
+import { signOut, useSession } from "next-auth/react"; // 1. Import useSession
 
 const Profile = () => {
+  // 2. Panggil hook useSession untuk mendapatkan data sesi dan statusnya
+  const { data: session, status } = useSession();
+
+  // 3. Tampilkan placeholder (skeleton) saat data sesi sedang dimuat
+  if (status === "loading") {
+    return (
+      <div className="h-10 w-10 rounded-full flex justify-center items-center bg-gray-200 animate-pulse">
+        <Spinner size="sm" />
+      </div>
+    );
+  }
+
+  // 4. Tentukan gambar profil: gunakan gambar dari sesi, atau gambar default jika tidak ada
+  const userImage = session?.user?.image || "/images/profile/user-1.jpg";
+
   return (
     <div className="relative group/menu">
       <Dropdown
@@ -18,11 +33,12 @@ const Profile = () => {
         renderTrigger={() => (
           <span className="h-10 w-10 hover:text-primary hover:bg-lightprimary rounded-full flex justify-center items-center cursor-pointer group-hover/menu:bg-lightprimary group-hover/menu:text-primary">
             <Image
-              src="/images/profile/user-1.jpg"
-              alt="logo"
+              // 5. Gunakan gambar profil dinamis dari variabel userImage
+              src={userImage}
+              alt="Profil Pengguna"
               height="35"
               width="35"
-              className="rounded-full"
+              className="rounded-full object-cover" // Tambahkan object-cover
             />
           </span>
         )}
@@ -36,7 +52,6 @@ const Profile = () => {
           Profil
         </Dropdown.Item>
         <div className="p-3 pt-0">
-          {/* 3. Ganti Button di bawah ini */}
           <Button
             size={"sm"}
             onClick={() => signOut({ callbackUrl: "/" })}
