@@ -39,7 +39,7 @@ const Profile = () => {
           {/* 3. Ganti Button di bawah ini */}
           <Button
             size={"sm"}
-            onClick={() => signOut({ callbackUrl: "/auth/login" })}
+            onClick={() => signOut({ callbackUrl: "/" })}
             className="mt-2 w-full border border-primary text-primary bg-transparent hover:bg-lightprimary outline-none focus:outline-none"
           >
             Logout

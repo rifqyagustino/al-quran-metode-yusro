@@ -1,5 +1,6 @@
-// src/app/(DashboardLayout)/page.tsx
 'use client';
+
+import React from "react";
 import { useSession } from "next-auth/react";
 import DashboardStats from "@/app/components/dashboard/DashboardStats";
 

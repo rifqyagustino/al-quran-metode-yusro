@@ -16,7 +16,7 @@ const BoxedLogin = () => {
   // Gunakan useEffect untuk menangani side-effect (redirect)
   useEffect(() => {
     if (status === "authenticated") {
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [status, router]);
 
