@@ -32,7 +32,7 @@ const SidebarContent: MenuItem[] = [
         name: "Dashboard",
         icon: "lucide:layout-dashboard",
         id: uniqueId(),
-        url: "/",
+        url: "/dashboard",
         isPro: false
       },
       {

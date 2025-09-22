@@ -1,15 +1,15 @@
 :root {
-  /* Warna utama: Nuansa biru laut */
-  --color-primary: #0077b6; /* Biru Laut */
-  --color-secondary: #14E9E2; /* Biru tetap */
+  /* Warna utama: Gradasi biru ke tosca */
+  --color-primary: #06B6D4; /* Biru Cyan (Dominan) */
+  --color-secondary: #14B8A6; /* Tosca */
   
-  /* Aksen dan penekanan: Nuansa biru laut */
-  --color-primary-emphasis: #0096c7; /* Biru Laut yang lebih cerah */
-  --color-secondary-emphasis: #023e8a; /* Biru Tua yang elegan */
+  /* Aksen dan penekanan: Nuansa biru dan tosca */
+  --color-primary-emphasis: #08748f; /* Biru yang lebih gelap */
+  --color-secondary-emphasis: #0E7490; /* Biru Tua */
   
   /* Warna latar belakang terang */
-  --color-lightprimary: #bff0fa; /* Biru Muda Laut */
-  --color-lightsecondary: #d0fbf9; /* Biru muda tetap */
+  --color-lightprimary: #ccfaff; /* Biru Cyan Sangat Muda */
+  --color-lightsecondary: #CCFBF1; /* Tosca Sangat Muda */
   
   /* Warna status: Tetap seperti standar untuk kejelasan */
   --color-info: #46caeb;
