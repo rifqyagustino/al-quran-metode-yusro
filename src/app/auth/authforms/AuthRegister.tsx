@@ -1,9 +1,9 @@
-// src/app/auth/authforms/AuthRegister.tsx
 "use client";
 
 import { Button, Label, TextInput, Alert } from "flowbite-react";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link"; // Pastikan Link diimpor
 
 const AuthRegister = () => {
   const [name, setName] = useState("");
@@ -96,10 +96,12 @@ const AuthRegister = () => {
             required
           />
         </div>
+
+        {/* Tombol Register */}
         <Button
           type="submit"
           color={"primary"}
-          className="w-full"
+          className="w-full bg-primary text-white rounded-xl hover:bg-primary-emphasis"
           disabled={loading}
         >
           {loading ? "Mendaftar..." : "Register"}
