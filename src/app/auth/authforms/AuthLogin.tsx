@@ -73,9 +73,12 @@ const AuthLogin = () => {
             required
           />
         </div>
-        {/* Fitur "Ingat Saya" dan "Lupa Password" bisa ditambahkan kemudian */}
+
         <div className="flex justify-end my-5">
-          <Link href={"#"} className="text-primary text-sm font-medium">
+          <Link
+            href={"/auth/forgot-password"}
+            className="text-primary text-sm font-medium"
+          >
             Lupa Password ?
           </Link>
         </div>
