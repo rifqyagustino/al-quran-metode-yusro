@@ -8,9 +8,9 @@ export default function Modul() {
 
 // Ganti data modules Anda dengan ini untuk melihat perubahannya
 const modules = [
-  { id: 1, title: 'Jilid 1', progress: 5, totalParts: 10, status: 'sedang dikerjakan' },
-  { id: 2, title: 'Jilid 2', progress: 0, totalParts: 21, status: 'belum mulai' },
-  { id: 3, title: 'Jilid 3', progress: 16, totalParts: 16, status: 'selesai' },
+  { id: 1, title: 'Modul 1', progress: 5, totalParts: 10, status: 'sedang dikerjakan' },
+  { id: 2, title: 'Modul 2', progress: 0, totalParts: 21, status: 'belum mulai' },
+  { id: 3, title: 'Modul 3', progress: 16, totalParts: 16, status: 'selesai' },
 ];
     return (
       <div className="p-4">
