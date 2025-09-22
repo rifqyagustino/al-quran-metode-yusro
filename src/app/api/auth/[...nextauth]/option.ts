@@ -24,12 +24,14 @@ export const authOptions: NextAuthOptions = {
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
+
+        // Pastikan user.password tidak null sebelum perbandingan
         if (user && user.password && (await bcrypt.compare(credentials.password, user.password))) {
-          if (!user.active) {
+          if (!user.active) { // Asumsikan ada kolom 'active' di model User Anda
             throw new Error("Akun belum diaktivasi. Silakan cek email Anda.");
           }
           const { password, ...userWithoutPassword } = user;
-          return userWithoutPassword;
+          return userWithoutPassword; // Mengembalikan semua data user kecuali password
         } else {
           throw new Error("Email atau password salah.");
         }
@@ -44,14 +46,18 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
+      // Saat login pertama kali, objek 'user' tersedia
       if (user) {
         token.id = user.id;
+        token.image = user.image; // <-- TAMBAHKAN INI: Menyisipkan path gambar ke token
       }
       return token;
     },
     async session({ session, token }) {
+      // Meneruskan properti dari token ke sesi di sisi client
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.image = token.image as string | null; // <-- TAMBAHKAN INI: Menyisipkan path gambar ke sesi
       }
       return session;
     },
