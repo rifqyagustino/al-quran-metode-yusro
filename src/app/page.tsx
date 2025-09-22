@@ -3,7 +3,8 @@
 import React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-import FullLogo from "./(DashboardLayout)/layout/shared/logo/FullLogo";
+// Sebaiknya gunakan absolute path untuk import agar lebih aman
+import FullLogo from "@/app/(DashboardLayout)/layout/shared/logo/FullLogo";
 
 export default function HomePage() {
   return (
@@ -12,11 +13,9 @@ export default function HomePage() {
       <header className="py-4 md:py-6 px-4 md:px-8 flex justify-between items-center shadow-md fixed top-0 w-full z-50 bg-white dark:bg-darkgray">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <Link href={"/"} className="focus:outline-none">
-            {/* Hanya gunakan satu FullLogo dengan ukuran tetap */}
-            <FullLogo 
-            />
-          </Link>
+          {/* === PERBAIKAN DI SINI === */}
+          {/* Hapus Link yang membungkus FullLogo, karena FullLogo sudah merupakan Link */}
+          <FullLogo />
         </div>
 
         {/* Tombol Masuk & Daftar */}
