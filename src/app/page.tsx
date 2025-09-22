@@ -77,7 +77,7 @@ export default function HomePage() {
                   </div>
                   {/* Kotak Card Kanan Bawah */}
                   <div className="p-4 rounded-xltext-dark dark:text-white text-center bg-lightprimary dark:bg-darkmuted">
-                    <Icon icon="solar:medal-ribbon-linear" className="text-4xl mx-auto mb-2 text-primary-emphasis" />
+                    <Icon icon="tabler:clock-bolt" className="text-4xl mx-auto mb-2 text-primary" />
                     <h3 className="text-lg font-bold mb-1">Belajar cepat</h3>
                     <p className="text-xs text-gray-700 dark:text-gray-300">Belajar cepat dan mudah.</p>
                   </div>

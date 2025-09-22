@@ -77,7 +77,7 @@ const AuthLogin = () => {
         <div className="flex justify-end my-5">
           <Link
             href={"/auth/forgot-password"}
-            className="text-primary text-sm font-medium"
+            className="text-primary text-sm font-medium hover:text-primary-emphasis"
           >
             Lupa Password ?
           </Link>
@@ -85,7 +85,7 @@ const AuthLogin = () => {
         <Button
           type="submit"
           color={"primary"}
-          className="w-full bg-primary text-white rounded-xl"
+          className="w-full bg-primary text-white rounded-xl hover:bg-primary-emphasis"
           disabled={loading}
         >
           {loading ? "Logging in..." : "Login"}

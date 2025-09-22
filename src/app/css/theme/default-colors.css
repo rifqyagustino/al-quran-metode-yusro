@@ -1,15 +1,15 @@
 :root {
   /* Warna utama: Gradasi biru ke tosca */
   --color-primary: #06B6D4; /* Biru Cyan (Dominan) */
-  --color-secondary: #14B8A6; /* Tosca */
+  --color-secondary: #2dd5bc; /* Tosca */
   
   /* Aksen dan penekanan: Nuansa biru dan tosca */
-  --color-primary-emphasis: #08748f; /* Biru yang lebih gelap */
+  --color-primary-emphasis: #0891B2; /* Biru yang lebih gelap */
   --color-secondary-emphasis: #0E7490; /* Biru Tua */
   
   /* Warna latar belakang terang */
-  --color-lightprimary: #ccfaff; /* Biru Cyan Sangat Muda */
-  --color-lightsecondary: #CCFBF1; /* Tosca Sangat Muda */
+  --color-lightprimary: #bdf4fa; /* Biru Cyan Sangat Muda */
+  --color-lightsecondary: #d1f7ef; /* Tosca Sangat Muda */
   
   /* Warna status: Tetap seperti standar untuk kejelasan */
   --color-info: #46caeb;

@@ -67,6 +67,8 @@ const config: Config = {
         dark: "var(--color-dark)",
         link: "var(--color-link)",
         darklink: "var(--color-darklink)",
+        "primary-emphasis": "var(--color-primary-emphasis)",
+        "secondary-emphasis": "var(--color-secondary-emphasis)",
       },
     },
   },
