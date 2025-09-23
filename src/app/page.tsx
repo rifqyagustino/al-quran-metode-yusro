@@ -3,8 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Icon } from "@iconify/react";
-// Sebaiknya gunakan absolute path untuk import agar lebih aman
-import FullLogo from "@/app/(DashboardLayout)/layout/shared/logo/FullLogo";
+import FullLogo from "./(DashboardLayout)/layout/shared/logo/FullLogo";
 
 export default function HomePage() {
   return (
@@ -13,9 +12,8 @@ export default function HomePage() {
       <header className="py-4 md:py-6 px-4 md:px-8 flex justify-between items-center shadow-md fixed top-0 w-full z-50 bg-white dark:bg-darkgray">
         {/* Logo */}
         <div className="flex-shrink-0">
-          {/* === PERBAIKAN DI SINI === */}
-          {/* Hapus Link yang membungkus FullLogo, karena FullLogo sudah merupakan Link */}
-          <FullLogo />
+            {/* Hanya gunakan satu FullLogo dengan ukuran tetap */}
+            <FullLogo/>
         </div>
 
         {/* Tombol Masuk & Daftar */}
@@ -35,9 +33,10 @@ export default function HomePage() {
       
       {/* Tambahkan padding atas untuk mengimbangi header yang fixed */}
       <div className="pt-20">
-        {/* ===== Hero Section ===== */}
-        <section className="bg-white dark:bg-darkgray overflow-hidden">
-          <div className="container mx-auto px-4 py-8 md:py-16">
+        
+      {/* ===== Hero Section ===== */}
+        <section className="bg-lightgray dark:bg-darkgray overflow-hidden">
+          <div className="container mx-auto px-4 py-8 md:py-16"> 
             <div className="grid grid-cols-12 items-center gap-6 md:gap-10">
               {/* Teks & Tombol */}
               <div className="col-span-12 lg:col-span-6 text-center lg:text-left">
@@ -60,6 +59,8 @@ export default function HomePage() {
                   </Link>
                 </div>
               </div>
+
+
               {/* Tiga Kotak Card */}
               <div className="col-span-12 lg:col-span-6 flex flex-col gap-4">
                 {/* Kotak Card Atas */}
@@ -76,12 +77,36 @@ export default function HomePage() {
                     <p className="text-xs text-gray-700 dark:text-gray-300">Bergabunglah dengan komunitas kami!</p>
                   </div>
                   {/* Kotak Card Kanan Bawah */}
-                  <div className="p-4 rounded-xltext-dark dark:text-white text-center bg-lightprimary dark:bg-darkmuted">
-                    <Icon icon="tabler:clock-bolt" className="text-4xl mx-auto mb-2 text-primary" />
-                    <h3 className="text-lg font-bold mb-1">Belajar cepat</h3>
-                    <p className="text-xs text-gray-700 dark:text-gray-300">Belajar cepat dan mudah.</p>
+                  <div className="p-4 rounded-xl text-dark dark:text-white text-center bg-lightprimary dark:bg-darkmuted">
+                    <Icon icon="solar:medal-ribbon-linear" className="text-4xl mx-auto mb-2 text-primary-emphasis" />
+                    <h3 className="text-lg font-bold mb-1">Sertifikat Kelulusan</h3>
+                    <p className="text-xs text-gray-700 dark:text-gray-300">Raihlah pengakuan atas usahamu.</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ===== Apa itu Metode Yusro? ===== */}
+        <section className="bg-white py-12">
+          <div className="container mx-auto px-4">
+            <div className="text-left mb-8">
+              <h2 className="text-2xl md:text-4xl font-bold text-center text-dark dark:text-white mb-2">
+                Apa Itu Metode Yusro?
+              </h2>
+            </div>
+            <div className="grid grid-cols-1 gap-8 items-center">
+              <div>
+                <p className="text-base text-gray-700 dark:text-gray-300 mb-4 leading-relaxed">
+                  Metode Yusro adalah pendekatan revolusioner dalam pembelajaran Al-Qur'an yang fokus pada kemudahan dan kecepatan. Dengan memecah materi menjadi unit-unit kecil yang mudah dicerna, Yusro memastikan setiap pembelajar, baik anak-anak maupun dewasa, dapat membaca Al-Qur'an dalam waktu singkat.
+                </p>
+                <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed">
+                  Sistem kami mengintegrasikan audio interaktif, latihan pengenalan huruf dan tajwid, serta fitur pelacakan progres yang membuat belajar menjadi pengalaman yang menyenangkan dan efektif.
+                </p>
+                <p className="text-base text-gray-700 dark:text-gray-300 leading-relaxed mt-4">
+                  Pendekatan ini didasarkan pada prinsip pengulangan dan visualisasi yang terbukti efektif dalam meningkatkan daya ingat dan pemahaman. Kami percaya bahwa setiap orang berhak mendapatkan akses mudah untuk mempelajari Al-Qur'an, dan Yusro hadir sebagai solusinya.
+                </p>
               </div>
             </div>
           </div>
@@ -131,6 +156,7 @@ export default function HomePage() {
           </div>
         </section>
 
+
         {/* ===== Call to Action ===== */}
         <section className="bg-primary py-12 text-center">
           <div className="container mx-auto px-4">
@@ -145,6 +171,7 @@ export default function HomePage() {
             </Link>
           </div>
         </section>
+
       </div>
     </>
   );
