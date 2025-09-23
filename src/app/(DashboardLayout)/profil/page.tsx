@@ -7,31 +7,31 @@ import Image from 'next/image';
 import { Icon } from '@iconify/react';
 
 export default function ProfilPage() {
-  // --- STATE UNTUK DATA PROFIL ---
+  // State untuk data profil
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [photo, setPhoto] = useState('/images/profile/default-avatar.png');
   
-  // --- STATE UNTUK UPLOAD FOTO ---
+  // State untuk upload foto
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
 
-  // --- STATE UNTUK MODAL UBAH PASSWORD ---
+  // State untuk modal ubah password
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   
-  // --- STATE UNTUK LOADING ---
+  // State untuk status loading
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  // Ref untuk input file
+  // Ref untuk input file yang tersembunyi
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
 
-  // Mengambil data profil saat komponen dimuat
+  // Efek untuk mengambil data profil saat halaman dimuat
   useEffect(() => {
     if (status === 'authenticated') {
       setIsLoading(true);
@@ -46,36 +46,41 @@ export default function ProfilPage() {
         })
         .finally(() => setIsLoading(false));
     } else if (status === 'unauthenticated') {
+      // Jika tidak login, arahkan ke halaman login
       window.location.href = '/auth/login';
     }
   }, [status]);
 
-  // --- SEMUA FUNGSI HANDLER DIDEFINISIKAN DI SINI ---
-
+  // Handler untuk memicu dialog pilih file
   const handleImageClick = () => {
     fileInputRef.current?.click();
   };
 
+  // Handler saat pengguna selesai memilih file
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       setSelectedFile(file);
-      setPhotoPreview(URL.createObjectURL(file));
+      setPhotoPreview(URL.createObjectURL(file)); // Buat pratinjau gambar
     }
   };
   
+  // Handler untuk memperbarui profil (termasuk foto)
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
     let imageUrl = photo;
 
+    // Langkah 1: Jika ada foto baru, unggah dulu ke Vercel Blob
     if (selectedFile) {
-      const formData = new FormData();
-      formData.append('profilePhoto', selectedFile);
       try {
-        const uploadResponse = await fetch('/api/profile/upload-photo', { method: 'POST', body: formData });
+        const uploadResponse = await fetch('/api/profile/upload-photo', {
+          method: 'POST',
+          headers: { 'x-vercel-filename': selectedFile.name },
+          body: selectedFile,
+        });
         const result = await uploadResponse.json();
         if (!uploadResponse.ok) throw new Error(result.error || 'Gagal mengunggah foto.');
-        imageUrl = result.filePath;
+        imageUrl = result.filePath; // Dapatkan URL baru dari Vercel Blob
       } catch (error) {
         alert((error as Error).message);
         setIsUpdating(false);
@@ -83,6 +88,7 @@ export default function ProfilPage() {
       }
     }
 
+    // Langkah 2: Kirim data teks (dan URL gambar baru) ke API
     try {
       const response = await fetch('/api/profile', {
         method: 'PATCH',
@@ -90,9 +96,9 @@ export default function ProfilPage() {
         body: JSON.stringify({ name, email, image: imageUrl }),
       });
       if (!response.ok) throw new Error('Gagal memperbarui profil.');
-      
+      await update(); // Perbarui sesi NextAuth dengan data terbaru
       alert('Profil berhasil diperbarui!');
-      setPhoto(imageUrl);
+      setPhoto(imageUrl); // Perbarui state foto utama
       setSelectedFile(null);
       setPhotoPreview(null);
     } catch (error) {
@@ -102,8 +108,8 @@ export default function ProfilPage() {
     }
   };
 
+  // Handler untuk modal password
   const handleOpenModal = () => setIsModalOpen(true);
-
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setCurrentPassword('');
@@ -111,6 +117,7 @@ export default function ProfilPage() {
     setConfirmPassword('');
   };
 
+  // Handler untuk mengirim perubahan password ke API
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
@@ -135,6 +142,7 @@ export default function ProfilPage() {
     }
   };
 
+  // Tampilkan Spinner saat data sedang dimuat
   if (isLoading || status === 'loading') {
     return <div className="flex justify-center items-center h-64"><Spinner size="xl" /></div>;
   }

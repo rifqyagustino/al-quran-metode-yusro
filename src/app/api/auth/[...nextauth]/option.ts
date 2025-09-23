@@ -46,18 +46,44 @@ export const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user }) {
-      // Saat login pertama kali, objek 'user' tersedia
+      // Saat sign-in awal, objek 'user' dari authorize akan tersedia.
+      // Kita gunakan untuk mengisi token pertama kali.
       if (user) {
         token.id = user.id;
-        token.image = user.image; // <-- TAMBAHKAN INI: Menyisipkan path gambar ke token
+        token.image = user.image;
+        token.name = user.name;
+        token.email = user.email;
       }
-      return token;
+      
+      // Pada setiap pemanggilan berikutnya (misal: saat memanggil `update()` atau
+      // saat sesi diakses), kita ambil data terbaru dari database.
+      const dbUser = await prisma.user.findUnique({
+        where: { id: token.id as string },
+      });
+
+      // Jika user tidak ditemukan di DB, kembalikan token apa adanya.
+      if (!dbUser) {
+        return token;
+      }
+
+      // Perbarui token dengan data terbaru dari database.
+      // Ini memastikan foto profil, nama, dll. selalu up-to-date.
+      return {
+        ...token,
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        image: dbUser.image,
+      };
     },
+
     async session({ session, token }) {
-      // Meneruskan properti dari token ke sesi di sisi client
-      if (session.user) {
+      // Pastikan semua data dari token diteruskan ke objek sesi di client.
+      if (token && session.user) {
         session.user.id = token.id as string;
-        session.user.image = token.image as string | null; // <-- TAMBAHKAN INI: Menyisipkan path gambar ke sesi
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.image as string | null;
       }
       return session;
     },

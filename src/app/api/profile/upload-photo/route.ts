@@ -1,10 +1,7 @@
-// src/app/api/profile/upload-photo/route.ts
-
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/option'; // Pastikan path ini benar
-import path from 'path';
-import fs from 'fs/promises';
+import { authOptions } from '../../auth/[...nextauth]/option';
+import { put } from '@vercel/blob';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -15,39 +12,37 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
   }
 
+  // Ambil nama file dari header 'x-vercel-filename'
+  const filename = request.headers.get('x-vercel-filename') || 'profile-photo.png';
+  
+  // Ambil body request yang berisi file
+  const fileBody = request.body;
+
+  if (!fileBody) {
+    return NextResponse.json({ error: 'Tidak ada file yang diunggah.' }, { status: 400 });
+  }
+
   try {
-    const formData = await request.formData();
-    const file = formData.get('profilePhoto') as File | null;
-
-    if (!file) {
-      return NextResponse.json({ error: 'Tidak ada file yang diunggah.' }, { status: 400 });
-    }
-
-    const buffer = Buffer.from(await file.arrayBuffer());
-    const filename = `${Date.now()}-${file.name.replace(/\s/g, '_')}`;
-    const uploadDir = path.join(process.cwd(), 'public/images/profile/uploads');
-    
-    await fs.mkdir(uploadDir, { recursive: true });
-    await fs.writeFile(path.join(uploadDir, filename), buffer);
-
-    const filePath = `/images/profile/uploads/${filename}`;
-    
-    // --- TAMBAHKAN BAGIAN INI ---
-    // 2. Simpan path file ke database
-    await prisma.user.update({
-      where: {
-        email: session.user.email,
-      },
-      data: {
-        image: filePath, // Asumsikan kolom di database Anda bernama 'image'
-      },
+    // 1. Unggah file ke Vercel Blob
+    const blob = await put(filename, fileBody, {
+      access: 'public',
+      addRandomSuffix: true, 
     });
-    // ----------------------------
 
-    return NextResponse.json({ message: 'Foto berhasil diunggah dan profil diperbarui!', filePath });
+    // 2. Simpan URL permanen yang dikembalikan oleh Vercel Blob ke database
+    await prisma.user.update({
+        where: { email: session.user.email },
+        data: { image: blob.url }, // Simpan URL lengkap dari Vercel Blob
+    });
+
+    // 3. Kembalikan URL tersebut ke frontend
+    return NextResponse.json({ 
+        message: 'Foto berhasil diunggah!', 
+        filePath: blob.url 
+    });
 
   } catch (error) {
-    console.error("Gagal mengunggah foto:", error);
+    console.error("Gagal mengunggah foto ke Vercel Blob:", error);
     return NextResponse.json({ error: 'Gagal mengunggah foto.' }, { status: 500 });
   }
 }
