@@ -22,7 +22,7 @@ const Profile = () => {
   }
 
   // 4. Tentukan gambar profil: gunakan gambar dari sesi, atau gambar default jika tidak ada
-  const userImage = session?.user?.image || "/images/profile/user-1.jpg";
+  const userImage = session?.user?.image || "/images/profile/user.png";
 
   return (
     <div className="relative group/menu">

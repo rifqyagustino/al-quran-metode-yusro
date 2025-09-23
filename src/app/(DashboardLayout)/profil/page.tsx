@@ -163,7 +163,7 @@ export default function ProfilPage() {
             onClick={handleImageClick}
           >
             <Image 
-              src={photoPreview || photo}
+              src={photoPreview || '/images/profile/user.png'}
               alt="Foto Profil" 
               layout="fill" 
               className="object-cover" 
