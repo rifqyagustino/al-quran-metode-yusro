@@ -74,9 +74,9 @@ const LetterCard = ({ letter, audioSrc, active = false, onPlay }: { letter: stri
 export default function Modul() {
   // Perubahan 1: Ubah struktur data menjadi objek yang berisi huruf dan path audio
    const letterData = [
-    { letter: "فَ", audioSrc: "/Audio/Halaman_1/fa.mp3" },
-    { letter: "مَ", audioSrc: "/Audio/Halaman_1/ma.mp3" },
-    { letter: "بَ", audioSrc: "/Audio/Halaman_1/ba.mp3" },
+    { letter: "فَ", audioSrc: "/audio/Halaman_1/fa.mp3" },
+    { letter: "مَ", audioSrc: "/audio/Halaman_1/ma.mp3" },
+    { letter: "بَ", audioSrc: "/audio/Halaman_1/ba.mp3" },
   ];
   
   const [playedLetters, setPlayedLetters] = useState(new Set([letterData[0].letter]));
