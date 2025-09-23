@@ -1,5 +1,3 @@
-// src/app/api/profile/upload-photo/route.ts
-
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/option';
@@ -28,6 +26,7 @@ export async function POST(request: Request) {
     // 1. Unggah file ke Vercel Blob
     const blob = await put(filename, fileBody, {
       access: 'public',
+      addRandomSuffix: true, 
     });
 
     // 2. Simpan URL permanen yang dikembalikan oleh Vercel Blob ke database

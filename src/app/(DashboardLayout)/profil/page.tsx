@@ -29,7 +29,7 @@ export default function ProfilPage() {
 
   // Ref untuk input file yang tersembunyi
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
 
   // Efek untuk mengambil data profil saat halaman dimuat
   useEffect(() => {
@@ -96,7 +96,7 @@ export default function ProfilPage() {
         body: JSON.stringify({ name, email, image: imageUrl }),
       });
       if (!response.ok) throw new Error('Gagal memperbarui profil.');
-      
+      await update(); // Perbarui sesi NextAuth dengan data terbaru
       alert('Profil berhasil diperbarui!');
       setPhoto(imageUrl); // Perbarui state foto utama
       setSelectedFile(null);
