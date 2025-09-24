@@ -8,7 +8,7 @@ import Image from "next/image";
 import { Icon } from "@iconify/react";
 
 export default function ProfilPage() {
-  const { data: session, status } = useSession();
+  const { data: session, status, update } = useSession();
   const router = useRouter();
 
   // --- STATE PROFIL ---
@@ -73,6 +73,7 @@ export default function ProfilPage() {
     setIsUpdating(true);
     let imageUrl = photo;
 
+    // Upload foto baru
     if (selectedFile) {
       const formData = new FormData();
       formData.append("profilePhoto", selectedFile);
@@ -93,6 +94,7 @@ export default function ProfilPage() {
       }
     }
 
+    // Kirim update profil
     try {
       const response = await fetch("/api/profile", {
         method: "PATCH",
@@ -100,7 +102,7 @@ export default function ProfilPage() {
         body: JSON.stringify({ name, email, image: imageUrl }),
       });
       if (!response.ok) throw new Error("Gagal memperbarui profil.");
-
+      await update(); // update sesi NextAuth
       alert("Profil berhasil diperbarui!");
       setPhoto(imageUrl);
       setSelectedFile(null);
@@ -146,7 +148,7 @@ export default function ProfilPage() {
     }
   };
 
-  // --- LOADING STATE ---
+  // --- LOADING ---
   if (status === "loading" || isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
@@ -155,7 +157,6 @@ export default function ProfilPage() {
     );
   }
 
-  // Jangan render apapun saat belum login
   if (status === "unauthenticated") {
     return null;
   }
@@ -230,6 +231,7 @@ export default function ProfilPage() {
         </div>
       </div>
 
+      {/* Modal Ubah Password */}
       <Modal show={isModalOpen} onClose={handleCloseModal}>
         <Modal.Header>Ubah Kata Sandi</Modal.Header>
         <Modal.Body>
