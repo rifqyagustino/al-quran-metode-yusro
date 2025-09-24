@@ -5,9 +5,7 @@ import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/option';
 import bcrypt from 'bcryptjs';
 
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 export async function PATCH(request: Request) {
   const session = await getServerSession(authOptions);

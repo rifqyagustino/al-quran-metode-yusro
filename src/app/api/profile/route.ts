@@ -2,9 +2,7 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/option'; // Sesuaikan path ke authOptions Anda
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import prisma from '@/lib/prisma';
 
 // --- FUNGSI GET: Mengambil data profil user ---
 export async function GET() {
