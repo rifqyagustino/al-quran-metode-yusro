@@ -1,6 +1,7 @@
 'use client';
 
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import DashboardStats from "@/app/components/dashboard/DashboardStats";
 
@@ -14,10 +15,21 @@ const modules = [
 ];
 
 export default function DashboardPage() {
-  // Mengambil data sesi di client
-  const { data: session } = useSession();
+const { data: session, status } = useSession();
+  const router = useRouter();
 
-  // Mengambil nama user, atau 'User' jika tidak ada sesi
+  // Jika masih loading, tampilkan indikator loading
+  if (status === "loading") {
+    return <p className="text-center mt-10">Loading...</p>;
+  }
+
+  // Jika belum login, redirect ke halaman login
+  if (status === "unauthenticated") {
+    router.push("/auth/login");
+    return null; // Jangan render halaman
+  }
+
+  // Ambil nama user
   const userName = session?.user?.name || 'User';
   return (
     <div>

@@ -3,18 +3,37 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { notFound } from 'next/navigation';
+import { notFound, useRouter } from 'next/navigation';
 import { v4 as uuidv4 } from 'uuid';
+import { useSession } from "next-auth/react";
 import HijaiyahCard from '@/app/components/dashboard/HijaiyahCard';
-import { exercisesData } from '@/app/data/exercises'; // Mengimpor data
+import { exercisesData } from '@/app/data/exercises';
 
 export default function LatihanDetailPage({ params }: { params: { id: string } }) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Kalau belum login, redirect ke login
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("auth/login");
+    }
+  }, [status, router]);
+
+  // Saat masih loading session, jangan render apa-apa dulu biar tidak flicker
+  if (status === "loading") {
+    return <div className="p-6">Memeriksa sesi...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    return null; // sudah diarahkan ke login
+  }
+
   const [recordings, setRecordings] = useState<Record<string, Blob>>({});
   const [allRecorded, setAllRecorded] = useState(false);
 
-  // Cari data latihan yang sesuai dengan ID dari URL
+  // Cari data latihan sesuai ID
   const exercise = exercisesData.find(ex => ex.id === params.id);
-  
   if (!exercise) {
     notFound();
   }
