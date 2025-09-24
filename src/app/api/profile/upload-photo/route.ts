@@ -2,9 +2,9 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../../auth/[...nextauth]/option'; // Pastikan path ini benar
 import { put } from '@vercel/blob';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
-const prisma = new PrismaClient();
+
 export async function POST(request: Request) {
   // Bungkus semua logika di dalam satu blok try...catch
   try {
