@@ -1,48 +1,49 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/option';
+import { authOptions } from '../../auth/[...nextauth]/option'; // Pastikan path ini benar
 import { put } from '@vercel/blob';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 export async function POST(request: Request) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user?.email) {
-    return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
-  }
-
-  // Ambil nama file dari header 'x-vercel-filename'
-  const filename = request.headers.get('x-vercel-filename') || 'profile-photo.png';
-  
-  // Ambil body request yang berisi file
-  const fileBody = request.body;
-
-  if (!fileBody) {
-    return NextResponse.json({ error: 'Tidak ada file yang diunggah.' }, { status: 400 });
-  }
-
+  // Bungkus semua logika di dalam satu blok try...catch
   try {
-    // 1. Unggah file ke Vercel Blob
-    const blob = await put(filename, fileBody, {
+    // 1. Ambil sesi pengguna terlebih dahulu
+    const session = await getServerSession(authOptions);
+
+    // 2. Lakukan pengecekan otentikasi
+    if (!session?.user?.email) {
+      return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
+    }
+
+    // 3. Ambil file dari request menggunakan formData (lebih andal)
+    const formData = await request.formData();
+    const file = formData.get('profilePhoto') as File | null;
+
+    if (!file) {
+      return NextResponse.json({ error: 'Tidak ada file yang diunggah.' }, { status: 400 });
+    }
+    
+    // 4. Unggah file ke Vercel Blob
+    const blob = await put(file.name, file, {
       access: 'public',
-      addRandomSuffix: true, 
+      addRandomSuffix: true,
     });
 
-    // 2. Simpan URL permanen yang dikembalikan oleh Vercel Blob ke database
+    // 5. Simpan URL lengkap dari Vercel Blob ke database
     await prisma.user.update({
-        where: { email: session.user.email },
-        data: { image: blob.url }, // Simpan URL lengkap dari Vercel Blob
+      where: {
+        email: session.user.email,
+      },
+      data: {
+        image: blob.url,
+      },
     });
 
-    // 3. Kembalikan URL tersebut ke frontend
-    return NextResponse.json({ 
-        message: 'Foto berhasil diunggah!', 
-        filePath: blob.url 
-    });
+    return NextResponse.json({ message: 'Foto berhasil diunggah!', filePath: blob.url });
 
   } catch (error) {
-    console.error("Gagal mengunggah foto ke Vercel Blob:", error);
-    return NextResponse.json({ error: 'Gagal mengunggah foto.' }, { status: 500 });
+    console.error("Gagal mengunggah foto:", error);
+    return NextResponse.json({ error: 'Gagal mengunggah foto.', details: (error as Error).message }, { status: 500 });
   }
 }

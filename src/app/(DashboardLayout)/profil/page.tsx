@@ -7,43 +7,99 @@ import { Button, Label, TextInput, Spinner, Modal } from "flowbite-react";
 import Image from "next/image";
 import { Icon } from "@iconify/react";
 
+// KOMPONEN BARU: Modal untuk Ubah Password
+// Logika untuk ubah password dipisahkan ke sini agar komponen utama lebih bersih
+const ChangePasswordModal = ({ show, onClose }: { show: boolean; onClose: () => void; }) => {
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+
+    if (newPassword !== confirmPassword) {
+      setError("Konfirmasi password baru tidak cocok.");
+      return;
+    }
+    
+    setIsChangingPassword(true);
+    
+    try {
+      const response = await fetch("/api/profile/change-password", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ currentPassword, newPassword }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Gagal mengubah password.");
+      
+      alert(result.message);
+      onClose(); // Panggil fungsi onClose dari parent untuk menutup modal
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setIsChangingPassword(false);
+    }
+  };
+
+  return (
+    <Modal show={show} onClose={onClose}>
+      <Modal.Header>Ubah Kata Sandi</Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && <p className="text-sm text-red-600">{error}</p>}
+          <div>
+            <Label htmlFor="currentPassword" value="Kata Sandi Saat Ini" />
+            <TextInput id="currentPassword" type="password" value={currentPassword} onChange={(e) => setCurrentPassword(e.target.value)} required />
+          </div>
+          <div>
+            <Label htmlFor="newPassword" value="Kata Sandi Baru" />
+            <TextInput id="newPassword" type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} required />
+          </div>
+          <div>
+            <Label htmlFor="confirmPassword" value="Konfirmasi Kata Sandi Baru" />
+            <TextInput id="confirmPassword" type="password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+          </div>
+          <div className="flex justify-end gap-4 pt-4">
+            <Button color="gray" onClick={onClose}>Batal</Button>
+            <Button type="submit" className="bg-primary" isProcessing={isChangingPassword}>Simpan Perubahan</Button>
+          </div>
+        </form>
+      </Modal.Body>
+    </Modal>
+  );
+};
+
+
+// KOMPONEN UTAMA: Halaman Profil
 export default function ProfilPage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
 
-  // --- STATE PROFIL ---
+  // State untuk data profil
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [photo, setPhoto] = useState("/images/profile/default-avatar.png");
-
-  // --- STATE FOTO ---
+  
+  // State untuk upload foto
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-
-  // --- STATE MODAL PASSWORD ---
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  // --- STATE LOADING ---
+  
+  // State untuk loading dan modal
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Ref untuk input file
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Redirect jika belum login
+  // Efek untuk memeriksa otentikasi dan mengambil data
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/auth/login");
-    }
-  }, [status, router]);
-
-  // Ambil data profil
-  useEffect(() => {
-    if (status === "authenticated") {
+      router.push("/auth/login"); // Menggunakan router.push untuk navigasi lebih mulus
+    } else if (status === "authenticated") {
       setIsLoading(true);
       fetch("/api/profile")
         .then((res) => res.json())
@@ -56,9 +112,9 @@ export default function ProfilPage() {
         })
         .finally(() => setIsLoading(false));
     }
-  }, [status]);
+  }, [status, router]);
 
-  // --- HANDLER FOTO ---
+  // Handler untuk upload & update profil
   const handleImageClick = () => fileInputRef.current?.click();
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -68,24 +124,20 @@ export default function ProfilPage() {
     }
   };
 
-  // --- UPDATE PROFIL ---
   const handleUpdateProfile = async () => {
     setIsUpdating(true);
     let imageUrl = photo;
 
-    // Upload foto baru
     if (selectedFile) {
       const formData = new FormData();
       formData.append("profilePhoto", selectedFile);
-
       try {
         const uploadResponse = await fetch("/api/profile/upload-photo", {
           method: "POST",
           body: formData,
         });
         const result = await uploadResponse.json();
-        if (!uploadResponse.ok)
-          throw new Error(result.error || "Gagal mengunggah foto.");
+        if (!uploadResponse.ok) throw new Error(result.error || "Gagal mengunggah foto.");
         imageUrl = result.filePath;
       } catch (error) {
         alert((error as Error).message);
@@ -94,7 +146,6 @@ export default function ProfilPage() {
       }
     }
 
-    // Kirim update profil
     try {
       const response = await fetch("/api/profile", {
         method: "PATCH",
@@ -102,7 +153,7 @@ export default function ProfilPage() {
         body: JSON.stringify({ name, email, image: imageUrl }),
       });
       if (!response.ok) throw new Error("Gagal memperbarui profil.");
-      await update(); // update sesi NextAuth
+      await update();
       alert("Profil berhasil diperbarui!");
       setPhoto(imageUrl);
       setSelectedFile(null);
@@ -114,49 +165,12 @@ export default function ProfilPage() {
     }
   };
 
-  // --- PASSWORD ---
-  const handleOpenModal = () => setIsModalOpen(true);
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-  };
-
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (newPassword !== confirmPassword) {
-      alert("Konfirmasi password baru tidak cocok.");
-      return;
-    }
-    setIsChangingPassword(true);
-    try {
-      const response = await fetch("/api/profile/change-password", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ currentPassword, newPassword }),
-      });
-      const result = await response.json();
-      if (!response.ok)
-        throw new Error(result.error || "Gagal mengubah password.");
-      alert(result.message);
-      handleCloseModal();
-    } catch (error) {
-      alert((error as Error).message);
-    } finally {
-      setIsChangingPassword(false);
-    }
-  };
-
-  // --- LOADING ---
+  // Tampilan loading
   if (status === "loading" || isLoading) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Spinner size="xl" />
-      </div>
-    );
+    return <div className="flex justify-center items-center h-64"><Spinner size="xl" /></div>;
   }
 
+  // Mencegah flash content sebelum redirect
   if (status === "unauthenticated") {
     return null;
   }
@@ -164,29 +178,13 @@ export default function ProfilPage() {
   return (
     <>
       <div className="bg-white rounded-lg shadow-md p-8 max-w-3xl mx-auto">
-        <input
-          type="file"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-          className="hidden"
-          accept="image/png, image/jpeg, image/webp"
-        />
+        <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept="image/png, image/jpeg, image/webp" />
+        
         <div className="flex flex-col items-center mb-6">
-          <div
-            className="relative w-32 h-32 mb-4 rounded-full overflow-hidden border-4 border-gray-200 cursor-pointer group"
-            onClick={handleImageClick}
-          >
-            <Image
-              src={photoPreview || photo}
-              alt="Foto Profil"
-              fill
-              className="object-cover"
-            />
+          <div className="relative w-32 h-32 mb-4 rounded-full overflow-hidden border-4 border-gray-200 cursor-pointer group" onClick={handleImageClick}>
+            <Image src={photoPreview || photo} alt="Foto Profil" fill className="object-cover" />
             <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-              <Icon
-                icon="solar:camera-outline"
-                className="text-white text-3xl"
-              />
+              <Icon icon="solar:camera-outline" className="text-white text-3xl" />
             </div>
           </div>
           <p className="text-2xl font-bold">{name}</p>
@@ -196,94 +194,25 @@ export default function ProfilPage() {
         <div className="space-y-6">
           <div>
             <Label htmlFor="nama" value="Nama Lengkap" />
-            <TextInput
-              id="nama"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
+            <TextInput id="nama" type="text" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
             <Label htmlFor="email" value="Alamat Email" />
-            <TextInput
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+            <TextInput id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
           </div>
         </div>
 
         <div className="flex flex-col md:flex-row gap-4 mt-8">
-          <Button
-            onClick={handleUpdateProfile}
-            className="flex-1 bg-primary text-white hover:bg-primary-emphasis"
-            isProcessing={isUpdating}
-          >
+          <Button onClick={handleUpdateProfile} className="flex-1 bg-primary text-white hover:bg-primary-emphasis" isProcessing={isUpdating}>
             {isUpdating ? "Menyimpan..." : "Update Profil"}
           </Button>
-          <Button
-            onClick={handleOpenModal}
-            className="flex-1 bg-gray-200 text-dark hover:bg-gray-300"
-          >
+          <Button onClick={() => setIsModalOpen(true)} className="flex-1 bg-gray-200 text-dark hover:bg-gray-300">
             Ubah Kata Sandi
           </Button>
         </div>
       </div>
 
-      {/* Modal Ubah Password */}
-      <Modal show={isModalOpen} onClose={handleCloseModal}>
-        <Modal.Header>Ubah Kata Sandi</Modal.Header>
-        <Modal.Body>
-          <form onSubmit={handleChangePassword} className="space-y-4">
-            <div>
-              <Label htmlFor="currentPassword" value="Kata Sandi Saat Ini" />
-              <TextInput
-                id="currentPassword"
-                type="password"
-                value={currentPassword}
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label htmlFor="newPassword" value="Kata Sandi Baru" />
-              <TextInput
-                id="newPassword"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div>
-              <Label
-                htmlFor="confirmPassword"
-                value="Konfirmasi Kata Sandi Baru"
-              />
-              <TextInput
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex justify-end gap-4 pt-4">
-              <Button color="gray" onClick={handleCloseModal}>
-                Batal
-              </Button>
-              <Button
-                type="submit"
-                className="bg-primary"
-                isProcessing={isChangingPassword}
-              >
-                Simpan Perubahan
-              </Button>
-            </div>
-          </form>
-        </Modal.Body>
-      </Modal>
+      <ChangePasswordModal show={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </>
   );
 }
