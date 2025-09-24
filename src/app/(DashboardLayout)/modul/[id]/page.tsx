@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from 'react'; // Import useRef dan useEffect
-import { Play } from 'lucide-react';
+import React, { useState, useRef, useEffect } from "react";
+import { Play } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 // Tipe props untuk ProgressBar
 type ProgressBarProps = {
@@ -9,7 +11,7 @@ type ProgressBarProps = {
   total: number;
 };
 
-// Komponen ProgressBar (tidak ada perubahan)
+// Komponen ProgressBar
 const ProgressBar = ({ current, total }: ProgressBarProps) => {
   const progressPercentage = total > 0 ? (current / total) * 100 : 0;
   return (
@@ -29,34 +31,48 @@ const ProgressBar = ({ current, total }: ProgressBarProps) => {
         ></div>
       </div>
     </div>
-  )
+  );
 };
 
-// Perubahan 3: Tambahkan logika audio ke dalam LetterCard
-const LetterCard = ({ letter, audioSrc, active = false, onPlay }: { letter: string; audioSrc: string; active?: boolean; onPlay: () => void; }) => {
+// Komponen LetterCard
+const LetterCard = ({
+  letter,
+  audioSrc,
+  active = false,
+  onPlay,
+}: {
+  letter: string;
+  audioSrc: string;
+  active?: boolean;
+  onPlay: () => void;
+}) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // useEffect untuk memuat audio saat komponen pertama kali dirender
   useEffect(() => {
     if (audioSrc) {
       audioRef.current = new Audio(audioSrc);
     }
   }, [audioSrc]);
 
-  // Fungsi internal untuk memutar audio lalu memanggil onPlay dari parent
   const handleAudioPlay = () => {
     if (audioRef.current) {
-      audioRef.current.play(); // Putar audio
-      onPlay(); // Jalankan fungsi dari parent (update progress & highlight)
+      audioRef.current.play();
+      onPlay();
     }
   };
 
-  const baseClasses = "aspect-square rounded-lg p-4 flex flex-col items-center justify-center text-center transition-all duration-300 group";
-  const activeClasses = "bg-emerald-50 border-2 border-emerald-300 shadow-lg";
+  const baseClasses =
+    "aspect-square rounded-lg p-4 flex flex-col items-center justify-center text-center transition-all duration-300 group";
+  const activeClasses =
+    "bg-emerald-50 border-2 border-emerald-300 shadow-lg";
   const inactiveClasses = "bg-white border-2 border-gray-200";
 
   return (
-    <div className={`${baseClasses} ${active ? activeClasses : inactiveClasses}`}>
+    <div
+      className={`${baseClasses} ${
+        active ? activeClasses : inactiveClasses
+      }`}
+    >
       <span className="text-8xl font-normal text-black mb-4">{letter}</span>
       <button
         onClick={handleAudioPlay}
@@ -69,23 +85,41 @@ const LetterCard = ({ letter, audioSrc, active = false, onPlay }: { letter: stri
   );
 };
 
-
 // Komponen utama
 export default function Modul() {
-  // Perubahan 1: Ubah struktur data menjadi objek yang berisi huruf dan path audio
-   const letterData = [
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  // Redirect jika belum login
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("auth/login");
+    }
+  }, [status, router]);
+
+  if (status === "loading") {
+    return <div className="p-6">Memeriksa sesi...</div>;
+  }
+
+  if (status === "unauthenticated") {
+    return null;
+  }
+
+  // Data huruf + audio
+  const letterData = [
     { letter: "فَ", audioSrc: "/Audio/Halaman_1/fa.mp3" },
     { letter: "مَ", audioSrc: "/Audio/Halaman_1/ma.mp3" },
     { letter: "بَ", audioSrc: "/Audio/Halaman_1/ba.mp3" },
   ];
-  
-  const [playedLetters, setPlayedLetters] = useState(new Set([letterData[0].letter]));
+
+  const [playedLetters, setPlayedLetters] = useState(
+    new Set([letterData[0].letter])
+  );
   const [activeLetter, setActiveLetter] = useState(letterData[0].letter);
 
   const handlePlay = (letter: string) => {
-    console.log("Memperbarui state untuk:", letter);
     setActiveLetter(letter);
-    setPlayedLetters(prevPlayed => new Set(prevPlayed).add(letter));
+    setPlayedLetters((prev) => new Set(prev).add(letter));
   };
 
   return (
@@ -94,17 +128,17 @@ export default function Modul() {
         <span className="bg-emerald-100 text-emerald-700 text-sm font-semibold px-3 py-1 rounded-full">
           Bagian A
         </span>
-        <h2 className="text-2xl font-bold text-gray-800 mt-3">Simak Pelafalan Huruf</h2>
-        <p className="text-gray-600 mt-1">Klik pada setiap huruf untuk mendengarkan pelafalannya.</p>
+        <h2 className="text-2xl font-bold text-gray-800 mt-3">
+          Simak Pelafalan Huruf
+        </h2>
+        <p className="text-gray-600 mt-1">
+          Klik pada setiap huruf untuk mendengarkan pelafalannya.
+        </p>
       </div>
-      
-      <ProgressBar 
-        current={playedLetters.size} 
-        total={letterData.length} 
-      />
-      
+
+      <ProgressBar current={playedLetters.size} total={letterData.length} />
+
       <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-4 justify-center">
-        {/* Perubahan 2: Map dari letterData dan kirim audioSrc sebagai prop */}
         {letterData.map((data) => (
           <LetterCard
             key={data.letter}
